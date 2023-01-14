@@ -20,6 +20,6 @@ fn main() {
 
     // loop
     loop {
-        let sys = system.clone();
+        
     }
 }
