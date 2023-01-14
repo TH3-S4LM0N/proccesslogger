@@ -10,7 +10,7 @@ const BETWEEN_CHECKS: std::time::Duration = std::time::Duration::from_secs(60);
 const LOGFILE: &str = "~/.processlogfile";
 const CONFIG_PATH: &str = "/etc/processlogger.conf.toml";
 
-impl Clone for System {}
+
 
 fn main() {
     let system: System = System::new_all(); 
