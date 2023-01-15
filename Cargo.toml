@@ -11,3 +11,4 @@ chrono = "0.4.23"
 regex = "1"
 toml = "0.5.10"
 serde = { version = "1", features = ["derive"] }
+xdg = "2.4.1"

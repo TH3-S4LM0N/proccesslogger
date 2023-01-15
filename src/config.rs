@@ -1,12 +1,14 @@
-use serde::Deserialize;
-use std::fs::File;
-use crate::CONFIG_PATH;
+use serde::{Deserialize, Serialize};
+use std::{fs::File, io::Write};
 
 pub fn load_config() -> Config {
     let cfgfiler = std::fs::read_to_string(CONFIG_PATH);
     let cfgfile = match cfgfiler {
         Ok(f) => f,
-        Err(e) => panic!("{:?}", e)
+        Err(e) => {
+            create_config();
+            return load_config();
+        }
     };
 
     let cfg: Config = toml::from_str(&cfgfile).expect("Failed to create toml config");
@@ -15,11 +17,17 @@ pub fn load_config() -> Config {
 }
 
 pub fn create_config() {
-    //let cfgfile = File::create(CONFIG_PATH).expect("Failed to create cfgfile");
-
+    let mut cfgfile = File::create(CONFIG_PATH).expect("Failed to create the config");
+    cfgfile
+        .write_all(
+            toml::to_string(&Config::default())
+                .expect("Failed to create toml str")
+                .as_bytes(),
+        )
+        .expect("Failed to write toml");
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Serialize, Debug, Default)]
 pub struct Config {
     monday: DayConfig,
     tuesday: DayConfig,
@@ -27,10 +35,10 @@ pub struct Config {
     thursday: DayConfig,
     friday: DayConfig,
     saturday: DayConfig,
-    sunday: DayConfig    
+    sunday: DayConfig,
 }
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Serialize, Debug, Default)]
 struct DayConfig {
     start: String,
-    length: String
+    length: String,
 }

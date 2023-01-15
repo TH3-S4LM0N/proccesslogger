@@ -2,24 +2,20 @@ use sysinfo::{System, SystemExt};
 
 mod config;
 mod diff;
-mod clone4sys; // lol hot garbage code
+
+use crate::{config as cconfig, diff as cdiff};
 
 const HOUR: std::time::Duration = std::time::Duration::from_secs(3600);
 const MINUTE: std::time::Duration = std::time::Duration::from_secs(60);
 const BETWEEN_CHECKS: std::time::Duration = std::time::Duration::from_secs(60);
 const LOGFILE: &str = "~/.processlogfile";
-const CONFIG_PATH: &str = "/etc/processlogger.conf.toml";
-
-
 
 fn main() {
-    let system: System = System::new_all(); 
+    // get config
+    let cfg = config::load_config();
 
-    // stuff
+    // get xdg config dir
+    // the intention is that its run as a userspace systemd module
+    let xdg = xdg::BaseDirectories::with_prefix("processlogger").expect("Failed to create xdg dirs");
 
-
-    // loop
-    loop {
-        
-    }
 }

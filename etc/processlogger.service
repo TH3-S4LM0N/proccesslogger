@@ -1,0 +1,6 @@
+[Unit]
+Description=proccesslogger
+
+[Service]
+ExecStart=#idk
+Type=simple
