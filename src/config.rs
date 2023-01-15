@@ -1,13 +1,16 @@
 use serde::{Deserialize, Serialize};
-use std::{fs::File, io::Write};
+use std::{fs::{File, create_dir}, io::Write, path::PathBuf};
 
-pub fn load_config() -> Config {
-    let cfgfiler = std::fs::read_to_string(CONFIG_PATH);
+// we call this function in itself
+#[allow(unconditional_recursion)]
+pub fn load_config(config_path: &PathBuf) -> Config {
+    let cfgfiler = std::fs::read_to_string(config_path);
     let cfgfile = match cfgfiler {
         Ok(f) => f,
         Err(e) => {
-            create_config();
-            return load_config();
+            println!("Failed to open config file: {:?}\nAttempting to recover", e);
+            create_config(config_path);
+            return load_config(config_path);
         }
     };
 
@@ -16,8 +19,9 @@ pub fn load_config() -> Config {
     return cfg;
 }
 
-pub fn create_config() {
-    let mut cfgfile = File::create(CONFIG_PATH).expect("Failed to create the config");
+pub fn create_config(config_path: &PathBuf) {
+    create_dir(config_path.parent().unwrap()).expect("Failed to create config dir");
+    let mut cfgfile = File::create(config_path).expect("Failed to create the config");
     cfgfile
         .write_all(
             toml::to_string(&Config::default())
@@ -29,16 +33,16 @@ pub fn create_config() {
 
 #[derive(Deserialize, Serialize, Debug, Default)]
 pub struct Config {
-    monday: DayConfig,
-    tuesday: DayConfig,
-    wednsday: DayConfig,
-    thursday: DayConfig,
-    friday: DayConfig,
-    saturday: DayConfig,
-    sunday: DayConfig,
+    pub monday: DayConfig,
+    pub tuesday: DayConfig,
+    pub wednsday: DayConfig,
+    pub thursday: DayConfig,
+    pub friday: DayConfig,
+    pub saturday: DayConfig,
+    pub sunday: DayConfig,
 }
 #[derive(Deserialize, Serialize, Debug, Default)]
-struct DayConfig {
-    start: String,
-    length: String,
+pub struct DayConfig {
+    pub start: String,
+    pub end: String,
 }

@@ -1,0 +1,27 @@
+[monday]
+start = "22:30"
+end = "07:00"
+
+[tuesday]
+start = "22:30"
+end = "07:00"
+
+[wednsday]
+start = "22:30"
+end = "07:00"
+
+[thursday]
+start = "22:30"
+end = "07:00"
+
+[friday]
+start = "00:30"
+end = "07:00"
+
+[saturday]
+start = "00:30"
+end = "07:00"
+
+[sunday]
+start = "22:30"
+end = "07:00"
