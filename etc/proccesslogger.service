@@ -1,8 +1,8 @@
 [Unit]
-Description=proccesslogger
+Description=processlogger
 
 [Service]
-ExecStart=/usr/bin/proccesslogger
+ExecStart=/usr/bin/processlogger
 Restart=always
 RestartSec=12
 

@@ -1,4 +1,13 @@
+<<<<<<< HEAD
 use std::{collections::HashMap, fs::{File, create_dir, read_to_string}, hash::Hash, io::{Write, Read}, path::{Path, PathBuf}};
+=======
+use std::{
+    collections::HashMap,
+    fs::{create_dir, read_to_string, File},
+    hash::Hash,
+    io::{Read, Write},
+};
+>>>>>>> ab0259e26b7e0cd0b2709f5d3cc77eda27bb71f7
 
 use chrono::Datelike;
 use config::DayConfig;
@@ -14,11 +23,16 @@ const BETWEEN_CHECKS: std::time::Duration = std::time::Duration::from_secs(60);
 //const LOGFILE: &str = "~/.processlogfile";
 
 fn main() {
+<<<<<<< HEAD
     let logfile = format!("{:?}/.processlogfile", std::env::home_dir().expect("Failed to get home dir"));
     print!("{:?}", &logfile);
+=======
+>>>>>>> ab0259e26b7e0cd0b2709f5d3cc77eda27bb71f7
     // parse arg
     let args: Vec<String> = std::env::args().collect();
-    if args.len() <= 1 {}
+    if args.len() <= 1 {
+        dbg!(args);
+    }
 
     // get xdg config dir
     // the intention is that its run as a userspace systemd module
@@ -29,7 +43,7 @@ fn main() {
     let cfg = config::load_config(&xdg.get_config_file("config.toml"));
     
     // this program lasts through days etc
-    loop {
+    'mainloop: loop {
         // figure out what day it is and set
         // the config accordingly
         let day = format!("{}", chrono::Local::now().date_naive().weekday());
@@ -49,6 +63,7 @@ fn main() {
             std::thread::sleep(MINUTE);
         } */
 
+<<<<<<< HEAD
         let filer = File::open(&logfile);
         let mut file = match filer {
             Ok(f) => f,
@@ -63,10 +78,24 @@ fn main() {
         file.read_to_string(&mut contents).expect("Failed to read file");
         file.write_all(format!("{}\n---{}---", contents, chrono::Local::now()).as_bytes()).expect("Failed to write file.");
 
+=======
+        let mut file = File::open(LOGFILE).expect("Failed to open file");
+        let mut contents: String = String::new();
+        file.read_to_string(&mut contents)
+            .expect("Failed to read file");
+        file.write_all(format!("{}\n---{}---", contents, chrono::Local::now()).as_bytes())
+            .expect("Failed to write file.");
+
+        // create system
+        let mut system = System::new_all();
+
+        let mut last_procs: &HashMap<Pid, Process>;
+>>>>>>> ab0259e26b7e0cd0b2709f5d3cc77eda27bb71f7
         // until the end
         while &format!("{}", chrono::Local::now().format("%H:%M")) != &daycfg.end {
-            let mut system = System::new_all();
+            // get processes
             system.refresh_all();
+<<<<<<< HEAD
             
             // https://github.com/GuillaumeGomez/sysinfo/issues/916
             let procs = system.processes().iter().map(|(pid, p)| {
@@ -79,6 +108,28 @@ fn main() {
 
             let file = File::open(&logfile).expect("Failed to create file");
         };
+=======
+            let mut procs = &mut system.processes();
+            
+
+            // get diff between these 2
+            let diff = diff::diff_hashmap(last_procs, procs);
+
+            // write diff
+            let file = File::open(LOGFILE).expect("Failed to create file");
+            let mut contents: String;
+            file.read_to_string(&mut contents)
+                .expect("Failed to read file");
+            file.write_all(
+                format!("{} -- {:?}", chrono::Local::now().format("%H:%M"), diff).as_bytes(),
+            )
+            .expect("Failed to write file");
+
+            last_procs = procs;
+
+            std::thread::sleep(BETWEEN_CHECKS);
+        }
+>>>>>>> ab0259e26b7e0cd0b2709f5d3cc77eda27bb71f7
     }
 }
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
 cargo build --release
-cp ./etc/proccesslogger.service /etc/systemd/user
-cp ./target/release/proccesslogger /usr/bin/proccesslogger
+cp ./etc/processlogger.service /etc/systemd/user
+cp ./target/release/processlogger /usr/bin/processlogger
