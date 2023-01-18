@@ -3,9 +3,5 @@
 version = 3
 
 [[package]]
-name = "pl-daemon"
-version = "0.1.0"
-
-[[package]]
-name = "pl-web"
+name = "proccesslogger"
 version = "0.1.0"
