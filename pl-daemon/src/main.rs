@@ -1,12 +1,16 @@
-use std::{fs::File, io::Write};
-use sysinfo::{System, SystemExt, ProcessExt};
 use crate::config::DayConfig;
 use chrono::Datelike;
+use std::{
+    fs::{File, OpenOptions},
+    io::Write,
+};
+use sysinfo::{ProcessExt, System, SystemExt, Process};
 
 mod config;
 
 //const HOUR: std::time::Duration = std::time::Duration::from_secs(3600);
 const MINUTE: std::time::Duration = std::time::Duration::from_secs(60);
+const TEN_SECONDS: std::time::Duration = std::time::Duration::from_secs(10);
 
 fn main() {
     // parse arg
@@ -40,10 +44,11 @@ fn main() {
             _ => unreachable!("{} is invalid!", day.as_str()),
         };
 
+        /*
         // loop until daycfg.start
         while &format!("{}", chrono::Local::now().format("%H:%M")) != &daycfg.start {
             std::thread::sleep(MINUTE);
-        }
+        } */
 
         /*
          * Format of logfile
@@ -59,26 +64,32 @@ fn main() {
         // this represents 1 minute inbetween checks
         loop {
             // get processes
+            println!("create system");
             let mut system = System::new_all();
             system.refresh_all();
-            let procs = system.processes().iter().map(|(pid, p)| {
-                (pid, (p.name()))
-            });
+            let mut procs: Vec<&str> = Vec::new();
+            for proc in system.processes().iter().map(|(pid, p)| (p.name())) {
+                procs.push(proc);
+            };
 
-            
+            println!("let to_write");
             let to_write = format!("{},{:?}", chrono::Local::now().format("%H:%M"), procs); //.as_bytes();
 
             // get file
-            let filer = File::open(logfile_path);
-            let mut file = match filer {
-                Ok(f) => f,
-                Err(e) => {
-                    dbg!(e);
-                    let file = File::create(logfile_path).expect("Failed to create logfile");
-                    file
-                }
-            };
-            file.write_all(to_write.as_bytes()).expect("Failed to write entire buffer");
+            println!("Create file");
+            let mut file = OpenOptions::new()
+                .append(true)
+                .write(true)
+                .create(true)
+                .open(logfile_path)
+                .expect("Failed to open logfile");
+
+            println!("Write file");
+            writeln!(file, "{to_write}").expect("Failed to write logfile");
+            // file.write_all(to_write.as_bytes())
+            //    .expect("Failed to write entire buffer");
+
+            std::thread::sleep(TEN_SECONDS);
         }
     }
 }
