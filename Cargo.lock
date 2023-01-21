@@ -329,6 +329,9 @@ dependencies = [
 [[package]]
 name = "pl-web"
 version = "0.1.0"
+dependencies = [
+ "xdg",
+]
 
 [[package]]
 name = "proc-macro2"
