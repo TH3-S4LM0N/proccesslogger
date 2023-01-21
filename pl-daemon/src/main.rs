@@ -49,6 +49,7 @@ fn main() {
         while &format!("{}", chrono::Local::now().format("%H:%M")) != &daycfg.start {
             std::thread::sleep(MINUTE);
         } */
+        
 
         /*
          * Format of logfile
@@ -77,6 +78,8 @@ fn main() {
 
             // get file
             println!("Create file");
+            salmon::fs::append(logfile_path, &to_write).expect("I am anger");
+            /*
             let mut file = OpenOptions::new()
                 .append(true)
                 .write(true)
@@ -85,7 +88,7 @@ fn main() {
                 .expect("Failed to open logfile");
 
             println!("Write file");
-            writeln!(file, "{to_write}").expect("Failed to write logfile");
+            writeln!(file, "{to_write}").expect("Failed to write logfile"); */
             // file.write_all(to_write.as_bytes())
             //    .expect("Failed to write entire buffer");
 

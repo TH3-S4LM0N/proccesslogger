@@ -1,7 +1,7 @@
 use core::panic;
 use std::{
     fs,
-    io::{BufRead, BufReader},
+    io::{BufRead, BufReader, Write},
     net::{TcpListener, TcpStream},
 };
 
@@ -27,9 +27,13 @@ fn handle_connection(mut stream: TcpStream) {
 
     let status_line = "HTTP/1.1 200 OK";
     let contents = get_contents();
+    let length = contents.len();
+    let response = 
+        format!("{}\r\nContent-Lenth: {}\r\n\r\n{}", status_line, length, contents);
+    stream.write_all(response.as_bytes()).expect("Failed to write entire buffer");
 }
 
-fn get_contents() {
+fn get_contents() -> String {
     // get contents of logfile
 
     // i had a super dope one liner to do this whole function
@@ -50,16 +54,18 @@ fn get_contents() {
             .map(|opt| opt.unwrap())
             .collect();
 
-    let test: Vec<(&str, &str)> = fs::read_to_string(
-        xdg::BaseDirectories::with_prefix("processlogger")
-            .expect("failed to create basedirectories struct")
-            .get_cache_file("processlogfile"))
-        .expect("Failed to read logfile")
-        .lines() // iter over eache line
-        .map(|line| line.split_once(",")) // split at first comma
-        .collect::<Vec<Option<(&str, &str)>>>()
-        .iter()
-        .map(|opt| opt.unwrap())
-        .collect();
-    dbg!(test);
+    // format
+    /*
+    let mut vec_formatted: Vec<String> = vec![];
+    for item in contents_raw {
+        vec_formatted.push(format!("{}: {}", item.0, item.1));
+    } */
+    let procs: Vec<Vec<&str>> = dbg!(contents_raw); 
+
+
+    // now diff each item against the item before it
+    //salmon::diff::diff_vec(vec_formatted);
+
+    String::new()
+
 }

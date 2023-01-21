@@ -7,3 +7,5 @@ edition = "2021"
 
 [dependencies]
 xdg = "2.4.1"
+#salmon = { git = "https://github.com/TH3-S4LM0N/lib-salmon", features = ["diff"] }
+salmon = { path = "../../lib-salmon", features = ["diff"] }
