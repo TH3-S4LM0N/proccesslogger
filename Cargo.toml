@@ -1,2 +1,2 @@
 [workspace]
-members = ["pl-daemon", "pl-web"]
+members = ["pl-daemon", "pl-web", "pl-shared"]

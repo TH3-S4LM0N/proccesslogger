@@ -40,7 +40,7 @@ fn main() {
         xdg::BaseDirectories::with_prefix("processlogger").expect("Failed to create xdg dirs");
 
     // get config
-    let cfg = config::load_config(&xdg.get_config_file("config.toml"));
+    let cfg = config::load_config(&xdg.get_config_file("config.ron"));
     
     // this program lasts through days etc
     'mainloop: loop {

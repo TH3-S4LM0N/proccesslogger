@@ -7,8 +7,9 @@ edition = "2021"
 
 [dependencies]
 xdg = "2.4.1"
-toml = "0.5.10"
+ron = "0.8"
 chrono = "0.4.23"
 sysinfo = "0.27.6"
 serde = { version = "1", features = ["derive"] }
 salmon = { git = "https://github.com/TH3-S4LM0N/lib-salmon", features = ["fs"] }
+pl-shared = { path = "../pl-shared" }

@@ -1,0 +1,32 @@
+// example config
+#![enable(implicit_some)]
+(
+    monday: DayConfig (
+        start: "22:30",
+        end: "07:00"
+    ),
+    tuesday: DayConfig (
+        start: "22:30",
+        end: "07:00"
+    ),
+    wednsday: DayConfig (
+        start: "22:30",
+        end: "07:00"
+    ),
+    thursday: DayConfig (
+        start: "22:30",
+        end: "07:00"
+    ),
+    friday: DayConfig (
+        start: "22:30",
+        end: "07:00"
+    ),
+    saturday: DayConfig (
+        start: "00:30",
+        end: "07:00"
+    ),
+    sunday: DayConfig (
+        start: "00:30",
+        end: "07:00"
+    )
+)
