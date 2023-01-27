@@ -65,11 +65,24 @@ fn get_contents() -> String {
         loop {
             // create new log for thsi minute
             let _ = &ronhtmlv.days_logs[iters].logs.push(MinLog::default());
-
             // diff the stuff
             let diff1 = &ronlog.days_logs[iters].logs[itersa].procs
-                - &ronlog.days_logs[iters].logs[itersa - 1].procs;
-            let diff2 = &ronlog.days_logs[iters].logs[itersa - 1].procs
+                - &ronlog.days_logs[iters].logs[{
+                    if itersa == 0 {
+                        0
+                    } else {
+                        itersa - 1
+                    }
+                }]
+                .procs;
+            let diff2 = &ronlog.days_logs[iters].logs[{
+                if itersa == 0 {
+                    0
+                } else {
+                    itersa - 1
+                }
+            }]
+            .procs
                 - &ronlog.days_logs[iters].logs[itersa].procs;
             let diff: HashSet<&String> = diff1.union(&diff2).collect();
 
@@ -91,7 +104,6 @@ fn get_contents() -> String {
     }
 
     dbg!(ronhtmlv);
-    panic!();
 
     String::new()
 }

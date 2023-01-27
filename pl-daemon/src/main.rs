@@ -5,6 +5,8 @@ use std::{fs, collections::HashSet};
 use sysinfo::{ProcessExt, System, SystemExt};
 
 const MINUTE: std::time::Duration = std::time::Duration::from_secs(60);
+#[cfg(debug_assertions)]
+const TEN_SECONDS: std::time::Duration = std::time::Duration::from_secs(60);
 
 mod config;
 
@@ -100,7 +102,7 @@ fn main() {
             }
             iters += 1;
             println!("Done w/ iter {iters}");
-            std::thread::sleep(MINUTE);
+            std::thread::sleep(TEN_SECONDS);
         }
     }
 }
