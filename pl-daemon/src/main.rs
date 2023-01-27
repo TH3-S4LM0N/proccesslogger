@@ -1,12 +1,13 @@
 use crate::config::DayConfig;
 use chrono::{Datelike, Weekday::*};
 use pl_shared::{DayLog, MinLog, RonLog, LOGFILE_NAME};
+use serde::{Serialize, Deserialize};
 use std::{fs, collections::HashSet};
 use sysinfo::{ProcessExt, System, SystemExt};
 
 const MINUTE: std::time::Duration = std::time::Duration::from_secs(60);
 #[cfg(debug_assertions)]
-const TEN_SECONDS: std::time::Duration = std::time::Duration::from_secs(60);
+const TEN_SECONDS: std::time::Duration = std::time::Duration::from_secs(10);
 
 mod config;
 
@@ -55,7 +56,7 @@ fn main() {
         })
         .expect("failed to convert to ron");
         ronlog.days_logs.push(DayLog {
-            date: chrono::offset::Local::now().format("%d/%m/%h").to_string(),
+            date: chrono::offset::Local::now().format("%d/%m/%Y").to_string(),
             logs: Vec::new(),
         });
         fs::write(
@@ -102,7 +103,7 @@ fn main() {
             }
             iters += 1;
             println!("Done w/ iter {iters}");
-            std::thread::sleep(TEN_SECONDS);
+            std::thread::sleep(MINUTE);
         }
     }
 }

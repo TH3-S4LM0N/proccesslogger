@@ -28,5 +28,8 @@
     sunday: DayConfig (
         start: "00:30",
         end: "07:00"
-    )
+    ),
+    ignores: [
+        
+    ]
 )

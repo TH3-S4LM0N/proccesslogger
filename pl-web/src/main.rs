@@ -60,11 +60,18 @@ fn get_contents() -> String {
     loop {
         // create a new day for this loop
         let _ = &ronhtmlv.days_logs.push(DayLog::default());
+
+        // set date etc for this day
+        ronhtmlv.days_logs[iters].date = format!("{}", &ronlog.days_logs[iters].date);
         // in this loop we loop through minutes
         let mut itersa = 0;
         loop {
             // create new log for thsi minute
             let _ = &ronhtmlv.days_logs[iters].logs.push(MinLog::default());
+
+            // set time for min
+            ronhtmlv.days_logs[iters].logs[itersa].time = format!("{}", &ronlog.days_logs[iters].logs[itersa].time);
+
             // diff the stuff
             let diff1 = &ronlog.days_logs[iters].logs[itersa].procs
                 - &ronlog.days_logs[iters].logs[{
@@ -84,10 +91,9 @@ fn get_contents() -> String {
             }]
             .procs
                 - &ronlog.days_logs[iters].logs[itersa].procs;
-            let diff: HashSet<&String> = diff1.union(&diff2).collect();
 
             ronhtmlv.days_logs[iters].logs[itersa].procs =
-                diff.iter().map(|s| format!("{s}")).collect();
+                 diff1.union(&diff2).map(|s| format!("{s}")).collect();
 
             itersa += 1;
 
@@ -103,22 +109,48 @@ fn get_contents() -> String {
         }
     }
 
-    dbg!(ronhtmlv);
+    // ignore stuff
+    let ignores = ron::from_str::<IgnoreFile>(&fs::read_to_string(xdg.get_config_file("ignorefile.ron")).expect("failed to read ignore file")).expect("failed to read to ron").ignores;
 
-    String::new()
+
+    // html that will be returned
+    let mut html = format!("
+<h1>Process Logger</h1>
+");
+
+
+    // reuse it again lol
+    iters = 0;
+    for day in &ronhtmlv.days_logs {
+        html = format!("{}<h2>{}</h2>", html, day.date);
+        let mut itersa = 0;
+        for log in &ronhtmlv.days_logs[iters].logs {
+            let mut procs_filtered: Vec<String> = Vec::new();
+            for proc in &log.procs {
+                for ignore in &ignores {
+                    let regex = regex::Regex::new(ignore).expect("failed to create regex");
+                    if !regex.is_match(proc) {
+                        procs_filtered.push(format!("{proc}"));
+                    }
+                }
+            }
+
+            if !procs_filtered.is_empty() {
+                html = format!("{}<h3>{}</h3>", html, log.time);
+                for proc in procs_filtered {
+                    html = format!("{}- {}<br>", html, proc);
+                }
+            }
+            
+            itersa += 1;
+        }
+        iters += 1;
+    }
+    
+    return html;
 }
 
-pub fn diff_vec(a: Vec<String>, b: Vec<String>) {
-    let mut rv: Vec<String> = Vec::new();
-
-    for itema in a {
-        for itemb in &b {
-            if &itema != itemb {
-                rv.push(itemb.to_string());
-            }
-        }
-    }
-
-    dbg!(rv);
-    panic!();
+#[derive(Serialize, Deserialize, Debug, Default)]
+struct IgnoreFile {
+    ignores: Vec<String>
 }
